@@ -39,7 +39,14 @@ class Rows:
         self.updateRows()
 
     def save(self):
-        res = self.table.updateRows(self.rows)
+        rows = []
+        for (i, r) in enumerate(_rows):
+            dict = {}
+            for (j,f) in enumerate(self.fields):
+                val = r[f.name]['value'].get()
+                dict[f.name] = val
+            rows.append(dict)
+        res = self.table.updateRows(rows)
         if(res == False):
             messagebox.showerror('Error', 'Some of the values are invalid')
 

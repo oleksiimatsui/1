@@ -33,8 +33,8 @@ class Validate:
         #print("Money")
         if (Validate.Real(value) == False):
             return False
-        number = int(value)
-        if(number > Validate.MAXMONEY):
+        number_ = float(value)
+        if(number_ > Validate.MAXMONEY):
             return False
         return True
     @staticmethod
@@ -47,7 +47,7 @@ class Validate:
             return False
         if(not Validate.Money(values[1])):
             return True
-        if(int(values[0]) > int(values[1])):
+        if(float(values[0]) > float(values[1])):
             return False
         return True
     

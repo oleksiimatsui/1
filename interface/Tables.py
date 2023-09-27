@@ -8,7 +8,7 @@ sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../mo
 from CreateTable import CreateTable
 from Rows import Rows
 from tkinter import messagebox
-from databaseManager import  database
+from database import  database
 class Tables:
     def __init__(self,parent, database):
         self.parent = parent

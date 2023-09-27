@@ -23,3 +23,30 @@ def test_intersection():
         assert True
         return
     assert False
+
+
+def test_char():
+    databaseManager.addDatabase("new DB")
+    db = databaseManager.databases[0]
+    fields = []
+    fields.append(field("char", "Char"))
+    t1 = table("t1", fields)
+    rows = [{"char": "name"}]
+    res = t1.updateRows(rows)
+    if(res == True):
+        assert False
+    else:
+        assert True
+
+def test_moneyInterval():
+    databaseManager.addDatabase("new DB")
+    db = databaseManager.databases[0]
+    fields = []
+    fields.append(field("MI", "MoneyInterval"))
+    t1 = table("t1", fields)
+    rows = [{"MI": "12.2,13.1"}]
+    res = t1.updateRows(rows)
+    if(res == False):
+        assert False
+    else:
+        assert True

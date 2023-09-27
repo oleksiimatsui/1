@@ -7,16 +7,16 @@ class table:
         self.id = name
         self.fields = fields
         self.rows = []
-    def updateRows(self, _rows):
-        rows = []
+
+    def validate(self, _rows):
         for (i, r) in enumerate(_rows):
-            dict = {}
             for (j,f) in enumerate(self.fields):
-                val = r[f.name]['value'].get()
-                v = Validate(r[f.name]['type'])
-                if(v.Validate(val) == True):
-                    dict[f.name] = val
-                else:
+                val = r[f.name]
+                v = Validate(f.type)
+                if(v.Validate(val) != True):
                     return False
-            rows.append(dict)
+
+    def updateRows(self, rows):
+        if(self.validate(rows) == False):
+            return False
         self.rows = rows
