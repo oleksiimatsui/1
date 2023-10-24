@@ -43,10 +43,10 @@ class Validate:
         values = value.split(',')
         if(len( values ) != 2):
             return False
-        if(not Validate.Money(values[0])):
+        if(Validate.Money(values[0]) == False):
             return False
-        if(not Validate.Money(values[1])):
-            return True
+        if(Validate.Money(values[1]) == False):
+            return False
         if(float(values[0]) > float(values[1])):
             return False
         return True

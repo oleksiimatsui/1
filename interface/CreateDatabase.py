@@ -10,7 +10,7 @@ class CreateDatabase:
     def __init__(self,parent,action):
         self.parent = parent
         self.addDb = action
-        self.name = StringVar("")
+        self.name = StringVar()
         self.initUI()
 
     def action(self):

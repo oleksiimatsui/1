@@ -15,6 +15,7 @@ class table:
                 v = Validate(f.type)
                 if(v.Validate(val) != True):
                     return False
+        return True
 
     def updateRows(self, rows):
         if(self.validate(rows) == False):

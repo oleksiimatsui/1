@@ -15,7 +15,7 @@ class CreateTable:
     def __init__(self,parent,action):
         self.parent = parent
         self.addTable = action
-        self.name = StringVar("")
+        self.name = StringVar()
         self.fields = []
         self.initUI()
         self.increment = 0
@@ -29,7 +29,7 @@ class CreateTable:
             self.win.destroy()
         
     def addField(self):
-        f = {'name': StringVar(""), 'type': StringVar(""), "Id" : self.increment}
+        f = {'name': StringVar(), 'type': StringVar(), "Id" : self.increment}
         self.increment = self.increment + 1
         self.fields.append(f)
         self.updateFields()

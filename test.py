@@ -1,4 +1,5 @@
-# test_with_pytest.py
+# test_with_pytest.py 
+# use python -m pytest test.py
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), 'models/'))
 from databaseManager import databaseManager
@@ -50,3 +51,19 @@ def test_moneyInterval():
         assert False
     else:
         assert True
+
+def test_moneyInterval_bad_data():
+    databaseManager.addDatabase("new DB")
+    db = databaseManager.databases[0]
+    fields = []
+    fields.append(field("MI", "MoneyInterval"))
+    t1 = table("t2", fields)
+    rows = [{"MI": "12.2,13.1a"}]
+    res = t1.updateRows(rows)
+    if(res == False):
+        assert True
+    else:
+        assert False
+
+
+#python -m pytest test.py

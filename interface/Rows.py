@@ -19,7 +19,7 @@ class Rows:
             row = {}
             for j,f in enumerate(self.table.fields):
                 key = f.name
-                val = StringVar('')
+                val = StringVar()
                 val.set(r[f.name])
                 value = {'value' : val, 'type' : f.type}
                 row[key] = value
@@ -29,7 +29,7 @@ class Rows:
     def addRow(self):
         row = {}
         for j,f in enumerate(self.table.fields):
-                val = StringVar('')
+                val = StringVar()
                 row[f.name] = {'value' : val, 'type' : f.type}
         self.rows.append(row)
         self.updateRows()
@@ -40,9 +40,9 @@ class Rows:
 
     def save(self):
         rows = []
-        for (i, r) in enumerate(_rows):
+        for (i, r) in enumerate(self.rows):
             dict = {}
-            for (j,f) in enumerate(self.fields):
+            for (j,f) in enumerate(self.table.fields):
                 val = r[f.name]['value'].get()
                 dict[f.name] = val
             rows.append(dict)

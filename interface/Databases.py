@@ -3,7 +3,6 @@ import os
 import time
 from tkinter import *
 from tkinter import filedialog as fd
-from pygame import mixer
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../models/'))
 from databaseManager import databaseManager
@@ -14,7 +13,6 @@ import copy
 root = Tk()
 root.title("My Databases")
 root.resizable(False, False)
-mixer.init()
 
 class App:
     def __init__(self,parent):
