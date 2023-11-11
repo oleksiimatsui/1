@@ -1,14 +1,20 @@
 from table import table
 from field import field
 import pickle
+import json
 
 class database:
+
+    TABLES_IK = 0
+
     def __init__(self, name):
         self.tables = []
         self.isSaved = False
         self.name = name
         self.id = name
         self.file = ''
+
+    
     def addTableFromPseudo(self, _t):
         fields = []
         for f in _t.fields:
@@ -30,9 +36,18 @@ class database:
                 self.tables.remove(db)
                 return
     def addTable(self, table):
+        database.TABLES_IK += 1
+        table.id = database.TABLES_IK
         self.tables.append(table)
+    
     def getTables(self):
         return self.tables
+
+    def getTable(self,id):
+        for x in self.tables:
+            if str(x.id) == str(id):
+                return x
+        return "not found"
     
     def save_object(self, file):
         with open(file, 'wb') as outp:  # Overwrites any existing file.
@@ -56,4 +71,5 @@ class database:
         t = table(name, t1.fields)
         rows = [value for value in t1.rows if value in t2.rows]
         t.rows = rows
-        self.tables.append(t)
+        self.addTable(t)
+        return t
