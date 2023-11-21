@@ -27,7 +27,7 @@ class database:
             return False
         if(_t.name == ''):
             return False
-        self.tables.append(table(_t.name, fields))
+        self.addTable(table(_t.name, fields))
         return True
 
     def deleteTable(self, id):

@@ -19,7 +19,7 @@ class databaseManager():
     def addDatabase(name):
         d = database(name)
         databaseManager.databases.append(d)
-        return '', 200
+        return d
     @staticmethod
     def deleteDatabase(id):
         for i, db in enumerate(databaseManager.databases):
@@ -37,6 +37,7 @@ class databaseManager():
         databaseManager.getDatabase(name).save(name)
     @staticmethod
     def getTables(db):
+        print(db)
         db = databaseManager.getDatabase(db)
         return db.getTables()
     @staticmethod
@@ -48,8 +49,10 @@ class databaseManager():
         return table
     @staticmethod
     def postTable(db,tb):
+        print(tb)
         db = databaseManager.getDatabase(db)
         tb.__class__ = table
+        print("aaaaa")
         fields = tb.fields.copy()
         tb.rows = []
         tb.fields = []

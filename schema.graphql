@@ -1,0 +1,70 @@
+schema {
+  query: Query
+  mutation: Mutation
+}
+
+type Field {
+  name: String
+  type: String
+}
+
+input FieldInput {
+  name: String
+  type: String
+}
+
+type Row {
+  key: String
+  value: String
+}
+
+input RowInput {
+  key: String!
+  value: String
+}
+
+type Table {
+  id: ID!
+  name: String!
+  fields: [Field]!
+  rows: [String]!
+}
+
+input TableInput {
+  name: String!
+  fields: [FieldInput]!
+}
+
+type Database {
+  id: ID!
+  name: String!
+  tables: [Table]!
+  isSaved: Boolean!
+}
+
+type DatabaseResult {
+  success: Boolean!
+  errors: [String]
+  database: Database
+}
+
+type TableResult {
+  success: Boolean!
+  errors: [String]
+  table: Table
+}
+
+type Query {
+  databases: [Database]
+  database(db: String!): Database
+  tables(db: String!): [Table]
+  table(db: String!, tb: ID!): Table
+}
+
+type Mutation {
+  createDatabase(name: String!): DatabaseResult
+  importDatabase(name: String!): DatabaseResult
+  createTable(db: String!, tb: TableInput): TableResult
+  updateRows(db: String!, tb: ID, rows: [RowInput!]): TableResult
+  intersectTables(db: String!, tb1: ID, tb2: ID): TableResult
+}
