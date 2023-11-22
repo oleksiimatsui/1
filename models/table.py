@@ -1,6 +1,10 @@
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../validation/'))
-from Validation import Validate
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+from validation.Validation import Validate
+
+from Pyro5.api import expose
+
+@expose
 class table:
     def __init__(self, name, fields):
         self.name = name

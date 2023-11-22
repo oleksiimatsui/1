@@ -11,11 +11,8 @@ from CreateDatabase import CreateDatabase
 from Tables import Tables
 import copy
 
-root = Tk()
-root.title("My Databases")
-root.resizable(False, False)
 
-class App:
+class Databases:
     def __init__(self,parent):
         self.parent = parent
         self.initUI()
@@ -85,6 +82,3 @@ class App:
         
         
 
-# Execute Tkinter
-p = App(root)
-root.mainloop()

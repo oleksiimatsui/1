@@ -1,11 +1,15 @@
 import pickle
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), './models/'))
-from database import database
-from table import table
-from field import field
+#sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), './models/'))
 
+from models.database import database
+from models.table import table
+from models.field import field
+import pickle
+from Pyro5.api import expose
+@expose
 class databaseManager():
+    
     databases = []
 
     @staticmethod
