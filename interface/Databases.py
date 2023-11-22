@@ -5,6 +5,7 @@ from tkinter import *
 from tkinter import filedialog as fd
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../models/'))
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
 from databaseManager import databaseManager
 from CreateDatabase import CreateDatabase
 from Tables import Tables
