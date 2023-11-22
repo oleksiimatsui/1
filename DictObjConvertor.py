@@ -1,13 +1,12 @@
 class Row:
     def __init__(self, key, value):
-        self.key = key
-        self.value = value
+        self.key = str(key)
+        self.value = str(value)
 
 def toDict(objects):
     res = {}
     for o in objects:
-        print(o.key)
-        res[o.key] = o.value
+        res[str(o.key)] = str(o.value)
     return res
 
 def toObjects(dict):
