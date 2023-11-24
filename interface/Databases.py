@@ -17,7 +17,7 @@ class Databases:
         self.parent = parent
         self.initUI()
     def open(self):
-        filename = fd.askopenfilename()
+        filename = os.path.basename(fd.askopenfilename())
         databaseManager.open(filename)
         self.updateDb()
     
