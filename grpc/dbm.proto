@@ -1,0 +1,45 @@
+syntax = "proto3";
+
+package dbmanager;
+
+service DatabaseManager {
+  rpc OpenDatabase(OpenDatabaseRequest) returns (Database);
+  rpc IntersectTables(IntersectTablesRequest) returns (Table);
+}
+
+message IntersectTablesRequest {
+  string db = 1;
+  string tb1 = 2;
+  string tb2 = 3;
+}
+
+message OpenDatabaseRequest {
+  string name = 1;
+}
+
+message Database {
+  string name = 1;
+  repeated Table tables = 2;
+}
+
+message Table {
+  string name = 1;
+  repeated Field fields = 2;
+  repeated Row rows = 3;
+  int32 id = 4;
+}
+
+message Field {
+  string name = 1;
+  string type = 2;
+}
+
+message Row {
+    repeated KeyValue values = 1;
+}
+
+message KeyValue {
+    string key = 1;
+    string value = 2;
+}
+

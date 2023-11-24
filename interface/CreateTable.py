@@ -4,9 +4,8 @@ import time
 from tkinter import *
 from tkinter import filedialog as fd
 import sys, os
-sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../models/'))
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../validation/'))
-from table import  table
+from models.table import table
 from Validation import Validate
 from tkinter import messagebox
 import copy
