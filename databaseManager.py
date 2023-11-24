@@ -35,7 +35,10 @@ class databaseManager():
     @staticmethod
     def open(name):
         print("open database " + name)
-        with open("files\\"+name, 'rb') as inp:
+        script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+        rel_path = "files\\"+name
+        abs_file_path = os.path.join(script_dir, rel_path)
+        with open( abs_file_path , 'rb') as inp:
             db = pickle.load(inp)
         databaseManager.databases.append(db)
         return db

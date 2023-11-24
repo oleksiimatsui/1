@@ -51,20 +51,13 @@ class DatabaseManagerService(dbm_pb2_grpc.DatabaseManagerServicer):
 def serve():
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     dbm_pb2_grpc.add_DatabaseManagerServicer_to_server(DatabaseManagerService(), server)
-
     server_address = '[::]:50051'
     server.add_insecure_port(server_address)
-
     port = server_address.split(':')
     ip_address = socket.gethostbyname(socket.gethostname())
-
     print(f'Server is listening on http://{ip_address}:{port[3]}')
-
-
     server.start()
     server.wait_for_termination()
-
-
 
 if __name__ == '__main__':
     serve()
