@@ -8,14 +8,13 @@ from Pyro5.api import expose
 @expose
 class database:
 
-    TABLES_IK = 0
-
     def __init__(self, name):
         self.tables = []
         self.isSaved = False
         self.name = name
         self.id = name
         self.file = ''
+        self.TABLES_IK = 0
 
     
     def addTableFromPseudo(self, _t):
@@ -39,8 +38,8 @@ class database:
                 self.tables.remove(db)
                 return
     def addTable(self, table):
-        database.TABLES_IK += 1
-        table.id = database.TABLES_IK
+        self.TABLES_IK += 1
+        table.id = self.TABLES_IK
         self.tables.append(table)
     
     def getTables(self):
