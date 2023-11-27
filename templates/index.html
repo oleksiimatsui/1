@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Database Management System</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/index.css') }}"
+    />
+  </head>
+  <body>
+    <div class="main">
+      <div class="left">
+        <div>
+          <input id="import-db-input" value="example1" />
+          <button id="import-db-button">import</button>
+        </div>
+        <div id="databases"></div>
+      </div>
+      <div id="tables" class="right"></div>
+      <img
+        class="flower"
+        src="{{ url_for('static', filename='images/flower.png') }}"
+      />
+    </div>
+
+    <script>
+      const API_URL = "/graphql";
+      // async function request(operation, query, variables = {}) {
+      //   const graphqlQuery = {
+      //     operationName: operation,
+      //     query: query,
+      //     variables: variables,
+      //   };
+      //   const options = {
+      //     method: "POST",
+      //     headers: {
+      //       "content-type": "application/json",
+      //     },
+      //     body: JSON.stringify(graphqlQuery),
+      //   };
+      //   const response = await fetch(API_URL, options);
+      //   const data = await response.json();
+      //   return data;
+      // }
+
+      function request(operation, query, variables = {}) {
+        return new Promise((resolve, reject) => {
+          const xhr = new XMLHttpRequest();
+          const url = API_URL;
+          const graphqlQuery = {
+            operationName: operation,
+            query: query,
+            variables: variables,
+          };
+          xhr.open("POST", url, true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.onreadystatechange = function () {
+            if (xhr.readyState === 4) {
+              if (xhr.status === 200) {
+                try {
+                  const data = JSON.parse(xhr.responseText);
+                  resolve(data);
+                } catch (error) {
+                  reject(error);
+                }
+              } else {
+                reject(new Error(`Request failed with status: ${xhr.status}`));
+              }
+            }
+          };
+          const requestBody = JSON.stringify(graphqlQuery);
+          xhr.send(requestBody);
+        });
+      }
+
+      async function getDatabases() {
+        const graphqlQuery = `
+            query getDatabases{
+                databases{
+                    id
+                    name
+                    tables{
+                        id
+                        name
+                    }
+                }
+            }
+            `;
+        let res = await request("getDatabases", graphqlQuery);
+        toDatabases(res.data.databases);
+      }
+
+      getDatabases();
+
+      $("#import-db-button").on("click", async function () {
+        const val = $("#import-db-input").val();
+        let res = await request(
+          "openDatabase",
+          `
+            mutation openDatabase{
+                importDatabase(
+                    name: "${val}"
+                ){
+                    errors
+                    success
+                    database{
+                        id
+                        name
+                    }
+                }
+            }
+            `
+        );
+        getDatabases();
+      });
+      function toDatabases(dbs) {
+        let div = document.getElementById("databases");
+        div.innerHTML = "";
+        for (const db of dbs) {
+          let btn = document.createElement("div");
+          btn.className = "database";
+          btn.innerHTML = db.name;
+          div.appendChild(btn);
+          btn.setAttribute("name", db.name);
+          btn.addEventListener("click", function (e) {
+            openDB(e.target.getAttribute("name"));
+          });
+        }
+        return div;
+      }
+
+      async function openDB(name) {
+        let tables = await request(
+          undefined,
+          `
+              query tables($db: String!) {
+        tables(db: $db) {
+          id
+          name
+          fields {
+            name
+            type
+          }
+          rows
+        }
+      }
+            `,
+          { db: name }
+        );
+        let container = document.getElementById("tables");
+
+        if (tables.data.errors) {
+          container.innerHTML = tables.errors[0].message;
+          return;
+        }
+        container.innerHTML = "";
+        str =
+          "<div class='intersectTables'>" +
+          " <input id='tb1'/> <input id='tb2'>" +
+          " <button id='intersect' db='" +
+          name +
+          "'>Intersect</button>";
+        ("</div>");
+        div = $.parseHTML(str);
+        $(container).append(div);
+        document
+          .getElementById("intersect")
+          .addEventListener("click", function (e) {
+            intersect(e.target.getAttribute("db"));
+          });
+
+        for (let t of tables.data.tables) {
+          let table = toTable(t);
+          container.append(table);
+        }
+      }
+
+      function toTable(jsonData) {
+        const div = document.createElement("div");
+        const tableinf = document.createElement("div");
+        tableinf.innerHTML = "id: " + jsonData.id;
+        tableinf.innerHTML += ", name: " + jsonData.name;
+        tableinf.className = "tableInfo";
+        div.className = "table";
+        div.append(tableinf);
+        const table = document.createElement("table");
+        const thead = document.createElement("thead");
+        const tbody = document.createElement("tbody");
+        const headerRow = document.createElement("tr");
+        jsonData.fields.forEach((column) => {
+          const th = document.createElement("th");
+          th.textContent = column.name;
+          headerRow.appendChild(th);
+        });
+        thead.appendChild(headerRow);
+        jsonData.rows.forEach((r) => {
+          const sampleRow = document.createElement("tr");
+
+          r = JSON.parse(r);
+          for (const value of Object.values(r)) {
+            const td = document.createElement("td");
+            td.textContent = value;
+            sampleRow.appendChild(td);
+          }
+          tbody.appendChild(sampleRow);
+        });
+        table.appendChild(thead);
+        table.appendChild(tbody);
+        table.border = "1";
+        div.append(table);
+        return div;
+      }
+
+      async function intersect(db) {
+        let tb1 = document.getElementById("tb1").value;
+        let tb2 = document.getElementById("tb2").value;
+        let res = await request(
+          "intersectTables",
+          `
+            mutation intersectTables{
+                intersectTables(
+                    db: "${db}"
+                    tb1: "${tb1}"
+                    tb2: "${tb2}"
+                ){
+                    errors
+                    success
+                    table{
+                        id
+                        name
+                        fields{
+                          name 
+                          type
+                        }
+                        rows
+                    }
+                }
+            }
+            `
+        );
+        openDB(db);
+      }
+    </script>
+  </body>
+</html>

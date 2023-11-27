@@ -34,14 +34,16 @@ class databaseManager():
                 return 
     @staticmethod
     def open(name):
-        print("open database " + name)
-        script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
-        rel_path = "files\\"+name
-        abs_file_path = os.path.join(script_dir, rel_path)
-        with open( abs_file_path , 'rb') as inp:
-            db = pickle.load(inp)
-        databaseManager.databases.append(db)
-        return db
+        a = databaseManager.getDatabase(name) 
+        if (databaseManager.getDatabase(name) == None):
+            script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
+            rel_path = "files\\"+name
+            abs_file_path = os.path.join(script_dir, rel_path)
+            with open( abs_file_path , 'rb') as inp:
+                db = pickle.load(inp)
+            databaseManager.databases.append(db)
+            return db
+        
     @staticmethod
     def save(name):
         databaseManager.getDatabase(name).save(name)

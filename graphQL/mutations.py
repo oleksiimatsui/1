@@ -1,6 +1,8 @@
 from ariadne import convert_kwargs_to_snake_case
 from databaseManager import databaseManager
-from DictObjConvertor import *
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
+from services.DictObjConvertor import *
 
 
 def create_database_resolver(self, info, name):

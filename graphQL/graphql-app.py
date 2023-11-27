@@ -1,13 +1,17 @@
+
+import sys, os
+sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
 from databaseManager import databaseManager
 from ariadne import load_schema_from_path, make_executable_schema, \
     graphql_sync, snake_case_fallback_resolvers, ObjectType
 from ariadne.explorer import ExplorerGraphiQL
-from flask import Flask, jsonify, request
-
+from flask import Flask, jsonify, request, render_template
+from flask_cors import CORS
 from mutations import *
 from queries import *
 
-type_defs = load_schema_from_path("schema.graphql")
+
+type_defs = load_schema_from_path("graphQL/schema.graphql")
 
 query = ObjectType("Query")
 mutation = ObjectType("Mutation")
@@ -27,7 +31,8 @@ schema = make_executable_schema(
     type_defs, query, mutation, snake_case_fallback_resolvers
 )
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder="../templates", static_url_path='/static', static_folder='../static')
+CORS(app)
 
 explorer_html = ExplorerGraphiQL().html(None)
 
@@ -46,6 +51,11 @@ def graphql_server():
     )
     status_code = 200 if success else 400
     return jsonify(result), status_code
+
+
+@app.route("/") 
+def hello(): 
+    return render_template('index.html') 
 
 if __name__ == "__main__":
     app.run(debug=True)

@@ -1,0 +1,93 @@
+.database {
+  border: 1px solid rgb(208, 102, 155);
+  background-color: rgb(255, 238, 247);
+  padding: 8px;
+  margin: 8px 0px;
+}
+
+body {
+  background-color: rgb(255, 173, 231);
+}
+body,
+html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+input {
+  background-color: rgb(255, 254, 254);
+  padding: 8px;
+  border: none;
+  outline: none;
+  border: 1px solid rgb(249, 144, 179);
+}
+
+.main {
+  height: 90%;
+  display: flex;
+  gap: 8px;
+  padding: 8px;
+  justify-content: center;
+  position: relative;
+}
+
+button {
+  border: 1px solid rgb(208, 102, 155);
+  background: rgb(255, 208, 224);
+  padding: 8px;
+}
+
+.left {
+  height: auto;
+  background: rgb(255, 223, 239);
+  padding: 8px;
+  min-width: 40%;
+}
+.right {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 40%;
+  background: rgb(255, 223, 239);
+  padding: 8px;
+}
+
+.flower {
+  width: 200px;
+  position: absolute;
+  bottom: 10px;
+  right: 150px;
+  opacity: 0.5;
+}
+
+.database:hover,
+button:hover {
+  background: rgb(249, 144, 179);
+}
+
+.table {
+  background: rgb(255, 202, 229);
+  padding: 8px;
+  border-radius: 8px;
+}
+table {
+  border: none;
+  width: 100%;
+}
+th {
+  background: rgb(255, 151, 170);
+  border: none;
+}
+td {
+  background: rgb(255, 255, 255);
+  border: none;
+}
+
+.intersectTables {
+  height: 32px;
+}
+
+.tableInfo {
+  margin: 8px;
+}
