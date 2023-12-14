@@ -34,7 +34,7 @@ class databaseManager():
                 return 
     @staticmethod
     def open(name):
-        a = databaseManager.getDatabase(name) 
+        db = databaseManager.getDatabase(name) 
         if (databaseManager.getDatabase(name) == None):
             script_dir = os.path.dirname(__file__) #<-- absolute dir the script is in
             rel_path = "files\\"+name
@@ -43,6 +43,7 @@ class databaseManager():
                 db = pickle.load(inp)
             databaseManager.databases.append(db)
             return db
+        return db
         
     @staticmethod
     def save(name):

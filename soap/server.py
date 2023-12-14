@@ -2,114 +2,84 @@ from spyne import Application, rpc, ServiceBase, Integer, Unicode, AnyDict, Comp
 from spyne.protocol.soap import Soap11
 from spyne.server.wsgi import WsgiApplication
 
+
 import sys, os
 sys.path.append(os.path.join(os.path.dirname(os.path.realpath(__file__)), '../'))
 
-from models.field import field
 from databaseManager import databaseManager
 
 
 class FieldModel(ComplexModel):
     name = Unicode
     type = Unicode
-    default = Unicode
-
 
 class RowModel(ComplexModel):
     values = Array(AnyDict)
 
-
 class TableModel(ComplexModel):
+    id = Integer
     name = Unicode
     fields = Array(FieldModel)
-    rows = Array(Unicode)
-
+    rows = Array(AnyDict)
 
 class DatabaseModel(ComplexModel):
+    id = Unicode
     name = Unicode
     tables = Array(TableModel)
 
 
-db_manager = databaseManager
-
-
 class DBManagerService(ServiceBase):
-    @rpc(_returns=Unicode)
-    def get_database_name(self):
-        return db_manager.db.name
+    @rpc(_returns=Array(DatabaseModel))
+    def get_database(self):
+        db = databaseManager.getDatabases()
+        return db
 
-    @rpc(_returns=Array(TableModel))
-    def get_database_tables(self):
-        return db_manager.db.tables
+    @rpc(Unicode, _returns=DatabaseModel)
+    def get_database(self, name):
+        db = databaseManager.getDatabase(name)
+        return db
+    
+    @rpc(Unicode, _returns=Array(TableModel))
+    def get_tables(self, db):
+        return databaseManager.getTables(db)
 
     @rpc(Unicode, _returns=DatabaseModel)
     def create_database(self, name):
-        db_manager.create_database(name)
-        db = db_manager.db
-        print(f"Створено базу даних {name}")
-        return DatabaseModel(name=db.name, tables=[])
+        databaseManager.addDatabase(name)
+        db = databaseManager.db
+        return db
 
-    @rpc(Unicode, _returns=TableModel)
-    def add_table(self, name):
-        db_manager.add_table(name)
-        table = db_manager.get_table(name)
-        print(f"Створено таблицю {name}")
-        return TableModel(name=table.name, columns=[], rows=[])
+    @rpc(Unicode, Unicode, _returns=TableModel)
+    def add_table(self, db, name):
+        tb = databaseManager.postTable(db,name)
+        return tb
 
-    @rpc(Unicode, _returns=TableModel)
-    def get_table(self, name):
-        table = db_manager.get_table(name)
-        return TableModel(name=table.name,
-                          columns=[FieldModel(type=col.type, name=col.name, default=col.default) for col in
-                                   table.columns], rows=[RowModel(values=row.values) for row in table.rows])
-
-    @rpc(Unicode, _returns=None)
-    def delete_table(self, name):
-        db_manager.delete_table(name)
-        print(f"Видалено таблицю {name}")
-
-    @rpc(Unicode, FieldModel, _returns=None)
-    def add_column(self, table_name, column):
-        col = FieldModel(column.type, column.name, column.default)
-        db_manager.add_column(table_name, col)
-        print(f"Додано атрибут {column.name} до таблиці {table_name}")
-
-    @rpc(Unicode, AnyDict, _returns=None)
-    def add_row(self, table_name, data):
-        db_manager.add_row(table_name, data)
-        print(f"Додано рядок до таблиці {table_name}")
-
-    @rpc(Unicode, Integer, AnyDict, _returns=None)
-    def change_row(self, table_name, index, data):
-        db_manager.change_row(table_name, index, data)
-        print(f"Змінено рядок таблиці {table_name}")
-
-    @rpc(Unicode, Unicode, Unicode, _returns=TableModel)
-    def join_tables(self, first_table_name, second_table_name, field_name):
-        table = db_manager.join_tables(first_table_name, second_table_name, field_name)
-        print(f"Сполучено таблиці {first_table_name} і {second_table_name} за спільним полем {field_name}")
-        return TableModel(name=table.name,
-                          columns=[FieldModel(type=col.type, name=col.name, default=col.default) for col in
-                                   table.columns], rows=[RowModel(values=row.values) for row in table.rows])
+    @rpc(Unicode, Integer, _returns=TableModel)
+    def get_table(self, db, tb):
+        table = databaseManager.getTable(db, tb)
+        return table
 
     @rpc(Unicode, Integer, _returns=None)
-    def delete_row(self, table_name, index):
-        db_manager.delete_row(table_name, index)
-        print(f"Вилучено рядок таблиці {table_name}")
-
-    @rpc(Unicode, _returns=Unicode)
-    def save_database(self, path_to_save):
-        print(f"Збережено базу даних за шляхом {path_to_save}")
-        return db_manager.save_database(path_to_save)
+    def delete_table(self, db, tb):
+        databaseManager.deleteTable(db,tb)
 
     @rpc(Unicode, _returns=None)
-    def open_database(self, path_to_load):
-        db_manager.open_database(path_to_load)
-        print(f"Завантажено базу даних за шляхом {path_to_load}")
+    def save_database(self, name):
+        return databaseManager.save(name)
+
+    @rpc(Unicode, _returns=DatabaseModel)
+    def open_database(self, name):
+        db = databaseManager.open(name)
+        print(db)
+        return db
+    @rpc(Unicode, Integer, Integer, _returns=TableModel)
+    def intersect(self, db, tb1, tb2):
+        return databaseManager.intersectTables(db,tb1,tb2)
+
 
 
 application = Application([DBManagerService],
-                          tns='my.namespace',
+                          tns='db.namespace',
                           in_protocol=Soap11(validator='lxml'),
                           out_protocol=Soap11())
 
